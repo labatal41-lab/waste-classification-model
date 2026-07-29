@@ -1,0 +1,72 @@
+const URL = "./";
+
+let model;
+let webcam;
+let labelContainer;
+let maxPredictions;
+
+async function init() {
+
+    const modelURL = URL + "model.json";
+    const metadataURL = URL + "metadata.json";
+
+    model = await tmImage.load(modelURL, metadataURL);
+
+    maxPredictions = model.getTotalClasses();
+
+    webcam = new tmImage.Webcam(300, 300, true);
+
+    await webcam.setup();
+
+    await webcam.play();
+
+    window.requestAnimationFrame(loop);
+
+    document.getElementById("webcam-container").innerHTML = "";
+    document.getElementById("webcam-container").appendChild(webcam.canvas);
+
+    labelContainer = document.getElementById("label-container");
+
+}
+
+async function loop() {
+
+    webcam.update();
+
+    await predict();
+
+    window.requestAnimationFrame(loop);
+
+}
+
+async function predict() {
+
+    const prediction = await model.predict(webcam.canvas);
+
+    let highest = prediction[0];
+
+    for (let i = 1; i < prediction.length; i++) {
+
+        if (prediction[i].probability > highest.probability) {
+            highest = prediction[i];
+        }
+
+    }
+
+    let confidence = (highest.probability * 100).toFixed(2);
+
+    let color = "#3498db";
+
+    if (highest.className === "BIODEGRADABLE") {
+        color = "green";
+    } else {
+        color = "red";
+    }
+
+    labelContainer.innerHTML =
+    `<div class="result" style="background:${color};color:white;">
+        Prediction : ${highest.className}<br>
+        Confidence : ${confidence}%
+    </div>`;
+
+}
