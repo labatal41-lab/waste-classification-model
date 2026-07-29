@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -19,13 +20,15 @@
 
 <h1>Waste Classification Detector</h1>
 
-<p>Detect Biodegradable & Non-Biodegradable Waste</p>
+<p>Select an image to classify</p>
 
-<button onclick="init()">Start Camera</button>
+<input type="file" id="imageUpload" accept="image/*">
 
-<div id="webcam-container"></div>
+<br><br>
 
-<div id="label-container"></div>
+<img id="preview" src="" alt="Preview">
+
+<div id="result"></div>
 
 </div>
 
